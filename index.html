@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>chatgpt usage stats</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #111;
+      color: #eee;
+      padding: 2rem;
+    }
+    h1 {
+      color: #0f0;
+    }
+    .upload {
+      margin: 1rem 0;
+    }
+    .stats {
+      margin-top: 2rem;
+      white-space: pre-wrap;
+      background: #222;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>chatgpt usage stats</h1>
+  <div class="upload">
+    <input type="file" id="fileInput" accept=".json">
+  </div>
+  <div class="stats" id="stats">upload your conversations.json</div>
+
+  <script>
+    document.getElementById("fileInput").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        try {
+          const data = JSON.parse(event.target.result);
+          showStats(data);
+        } catch (err) {
+          document.getElementById("stats").innerText = "invalid json file";
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function showStats(data) {
+      const chats = data.map((c, i) => ({
+        id: i+1,
+        title: c.title,
+        messages: c.mapping ? Object.keys(c.mapping).length : 0,
+        create_time: new Date(c.create_time * 1000)
+      }));
+
+      const totalChats = chats.length;
+      const totalMessages = chats.reduce((a, c) => a + c.messages, 0);
+      const avgMessages = (totalMessages / totalChats).toFixed(2);
+
+      const oldest = chats.reduce((a, c) => c.create_time < a.create_time ? c : a, chats[0]);
+      const most = chats.reduce((a, c) => c.messages > a.messages ? c : a, chats[0]);
+
+      // fake “realistic hours” calc like your python (assume ~47s per msg)
+      const realisticHours = (totalMessages * 47 / 3600).toFixed(2);
+
+      let output = "";
+      output += "=== chatgpt usage stats summary ===\n";
+      output += `Total realistic hours: ${realisticHours} hours\n`;
+      output += `Total chats: ${totalChats}\n`;
+      output += `Total messages: ${totalMessages}\n`;
+      output += `Average messages per chat: ${avgMessages}\n`;
+      output += `Most chatted chat: Chat #${most.id} with ${most.messages} messages\n`;
+      output += `Most chatted chat name: ${most.title}\n`;
+      output += `Oldest chat: Chat #${oldest.id} - '${oldest.title}'\n`;
+      output += `First message date: ${oldest.create_time}\n`;
+
+      document.getElementById("stats").innerText = output;
+    }
+  </script>
+</body>
+</html>

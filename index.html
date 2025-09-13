@@ -4,10 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="google-site-verification" content="CEAtEX6heCLry2jbt8FHnWDKoPpEtX4xJKJELODEnlI" />
-  <title>ChatGPT Usage Stats</title>
+  <title>ChatGPT Usage Stats Checker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8652974641249333"
           crossorigin="anonymous"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
 </head>
 <body class="bg-gray-900 text-white font-sans">
   <div class="max-w-4xl mx-auto p-6 space-y-6">
@@ -16,6 +21,13 @@
     <div class="text-center">
       <h1 class="text-4xl font-bold">💬 ChatGPT Usage Stats</h1>
       <p class="text-gray-400 mt-2">upload your <code>conversations.json</code></p>
+    </div>
+
+    <!-- directions button -->
+    <div class="text-center mt-6">
+      <a href="#directions" class="inline-block bg-blue-600 text-white font-bold py-3 px-6 rounded-2xl shadow-lg text-lg hover:bg-blue-500 transition-all duration-300">
+        Directions ⬇️
+      </a>
     </div>
 
     <!-- upload -->
@@ -27,6 +39,18 @@
                     file:bg-blue-600 file:text-white
                     hover:file:bg-blue-500"/>
       <p id="status" class="mt-3 text-gray-400 text-sm">no file uploaded yet</p>
+    </div>
+
+    <!-- directions section -->
+    <div id="directions" class="bg-gray-800 p-6 rounded-2xl shadow-lg mt-6">
+      <h2 class="text-2xl font-bold text-yellow-400 mb-3">📂 How to get your ChatGPT conversations.json</h2>
+      <ol class="list-decimal list-inside space-y-2 text-gray-300">
+        <li>Go to <a href="https://chat.openai.com/" target="_blank" class="text-blue-400 underline">chat.openai.com</a> and log in.</li>
+        <li>Click on your profile → Settings → Data Export.</li>
+        <li>Request your data export (this may take some time).</li>
+        <li>Once you get the ZIP file, extract it and find <code>conversations.json</code>.</li>
+        <li>Upload that file using the file input above to see your stats.</li>
+      </ol>
     </div>
 
     <!-- stats -->

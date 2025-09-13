@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ChatGPT Usage Stats</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- your adsense script -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8652974641249333"
+  <script async src="https://pagead2.googlesyndication.com/pagead/js?client=ca-pub-8652974641249333"
           crossorigin="anonymous"></script>
 </head>
 <body class="bg-gray-900 text-white font-sans">
@@ -15,43 +13,38 @@
 
     <!-- header -->
     <div class="text-center">
-      <h1 class="text-4xl font-bold tracking-tight">💬 ChatGPT Usage Stats</h1>
-      <p class="text-gray-400 mt-2">based on conversations.json export</p>
+      <h1 class="text-4xl font-bold">💬 ChatGPT Usage Stats</h1>
+      <p class="text-gray-400 mt-2">upload your <code>conversations.json</code></p>
     </div>
 
-    <!-- stats grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- upload -->
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg text-center">
+      <input id="fileInput" type="file" accept=".json"
+             class="file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-600 file:text-white
+                    hover:file:bg-blue-500"/>
+      <p id="status" class="mt-3 text-gray-400 text-sm">no file uploaded yet</p>
+    </div>
+
+    <!-- stats -->
+    <div id="stats" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
       <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
         <h2 class="text-lg font-semibold mb-2">⏱ Total Hours</h2>
-        <p class="text-3xl font-bold text-green-400">1079.80</p>
+        <p id="hours" class="text-3xl font-bold text-green-400">-</p>
       </div>
       <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
         <h2 class="text-lg font-semibold mb-2">💬 Total Chats</h2>
-        <p class="text-3xl font-bold text-blue-400">3732</p>
+        <p id="chats" class="text-3xl font-bold text-blue-400">-</p>
       </div>
       <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
         <h2 class="text-lg font-semibold mb-2">📨 Total Messages</h2>
-        <p class="text-3xl font-bold text-purple-400">82,708</p>
+        <p id="messages" class="text-3xl font-bold text-purple-400">-</p>
       </div>
       <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
         <h2 class="text-lg font-semibold mb-2">📊 Avg Msgs / Chat</h2>
-        <p class="text-3xl font-bold text-pink-400">22.16</p>
-      </div>
-    </div>
-
-    <!-- highlight cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
-        <h2 class="text-lg font-semibold mb-2">🔥 Most Chatted Chat</h2>
-        <p class="font-bold text-xl text-orange-400">Chat #3679</p>
-        <p class="text-gray-300">Bulk Delete Messages Recursively</p>
-        <p class="text-gray-400 mt-1">513 messages</p>
-      </div>
-      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
-        <h2 class="text-lg font-semibold mb-2">📜 Oldest Chat</h2>
-        <p class="font-bold text-xl text-yellow-400">Chat #3728</p>
-        <p class="text-gray-300">Coach Bus Boredom Solutions.</p>
-        <p class="text-gray-400 mt-1">Fri May 12 2023 09:00 AM</p>
+        <p id="avg" class="text-3xl font-bold text-pink-400">-</p>
       </div>
     </div>
 
@@ -72,5 +65,38 @@
       built with ❤️ using your ChatGPT data export
     </p>
   </div>
+
+<script>
+document.getElementById("fileInput").addEventListener("change", function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try {
+      const data = JSON.parse(ev.target.result);
+      let totalChats = data.length;
+      let totalMessages = 0;
+      data.forEach(c => {
+        totalMessages += Object.keys(c.mapping || {}).length;
+      });
+      let avgMsgs = (totalMessages / totalChats).toFixed(2);
+
+      // hours (super rough, just proportional to msgs)
+      let hours = (totalMessages * 0.02).toFixed(2);
+
+      document.getElementById("hours").textContent = hours;
+      document.getElementById("chats").textContent = totalChats;
+      document.getElementById("messages").textContent = totalMessages;
+      document.getElementById("avg").textContent = avgMsgs;
+
+      document.getElementById("status").textContent = "✅ file loaded successfully";
+      document.getElementById("stats").classList.remove("hidden");
+    } catch(err){
+      document.getElementById("status").textContent = "❌ invalid JSON file";
+    }
+  }
+  reader.readAsText(file);
+});
+</script>
 </body>
 </html>

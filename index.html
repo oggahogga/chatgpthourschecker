@@ -2,83 +2,75 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>chatgpt usage stats</title>
-  <style>
-    body {
-      font-family: monospace;
-      background: #111;
-      color: #eee;
-      padding: 2rem;
-    }
-    h1 {
-      color: #0f0;
-    }
-    .upload {
-      margin: 1rem 0;
-    }
-    .stats {
-      margin-top: 2rem;
-      white-space: pre-wrap;
-      background: #222;
-      padding: 1rem;
-      border-radius: 8px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatGPT Usage Stats</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- your adsense script -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8652974641249333"
+          crossorigin="anonymous"></script>
 </head>
-<body>
-  <h1>chatgpt usage stats</h1>
-  <div class="upload">
-    <input type="file" id="fileInput" accept=".json">
+<body class="bg-gray-900 text-white font-sans">
+  <div class="max-w-4xl mx-auto p-6 space-y-6">
+
+    <!-- header -->
+    <div class="text-center">
+      <h1 class="text-4xl font-bold tracking-tight">💬 ChatGPT Usage Stats</h1>
+      <p class="text-gray-400 mt-2">based on conversations.json export</p>
+    </div>
+
+    <!-- stats grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+        <h2 class="text-lg font-semibold mb-2">⏱ Total Hours</h2>
+        <p class="text-3xl font-bold text-green-400">1079.80</p>
+      </div>
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+        <h2 class="text-lg font-semibold mb-2">💬 Total Chats</h2>
+        <p class="text-3xl font-bold text-blue-400">3732</p>
+      </div>
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+        <h2 class="text-lg font-semibold mb-2">📨 Total Messages</h2>
+        <p class="text-3xl font-bold text-purple-400">82,708</p>
+      </div>
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+        <h2 class="text-lg font-semibold mb-2">📊 Avg Msgs / Chat</h2>
+        <p class="text-3xl font-bold text-pink-400">22.16</p>
+      </div>
+    </div>
+
+    <!-- highlight cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+        <h2 class="text-lg font-semibold mb-2">🔥 Most Chatted Chat</h2>
+        <p class="font-bold text-xl text-orange-400">Chat #3679</p>
+        <p class="text-gray-300">Bulk Delete Messages Recursively</p>
+        <p class="text-gray-400 mt-1">513 messages</p>
+      </div>
+      <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+        <h2 class="text-lg font-semibold mb-2">📜 Oldest Chat</h2>
+        <p class="font-bold text-xl text-yellow-400">Chat #3728</p>
+        <p class="text-gray-300">Coach Bus Boredom Solutions.</p>
+        <p class="text-gray-400 mt-1">Fri May 12 2023 09:00 AM</p>
+      </div>
+    </div>
+
+    <!-- ad slot -->
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg text-center">
+      <h2 class="text-gray-400 text-sm mb-2">Advertisement</h2>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-8652974641249333"
+           data-ad-slot="1234567890"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- footer -->
+    <p class="text-center text-gray-500 text-sm">
+      built with ❤️ using your ChatGPT data export
+    </p>
   </div>
-  <div class="stats" id="stats">upload your conversations.json</div>
-
-  <script>
-    document.getElementById("fileInput").addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        try {
-          const data = JSON.parse(event.target.result);
-          showStats(data);
-        } catch (err) {
-          document.getElementById("stats").innerText = "invalid json file";
-        }
-      };
-      reader.readAsText(file);
-    });
-
-    function showStats(data) {
-      const chats = data.map((c, i) => ({
-        id: i+1,
-        title: c.title,
-        messages: c.mapping ? Object.keys(c.mapping).length : 0,
-        create_time: new Date(c.create_time * 1000)
-      }));
-
-      const totalChats = chats.length;
-      const totalMessages = chats.reduce((a, c) => a + c.messages, 0);
-      const avgMessages = (totalMessages / totalChats).toFixed(2);
-
-      const oldest = chats.reduce((a, c) => c.create_time < a.create_time ? c : a, chats[0]);
-      const most = chats.reduce((a, c) => c.messages > a.messages ? c : a, chats[0]);
-
-      // fake “realistic hours” calc like your python (assume ~47s per msg)
-      const realisticHours = (totalMessages * 47 / 3600).toFixed(2);
-
-      let output = "";
-      output += "=== chatgpt usage stats summary ===\n";
-      output += `Total realistic hours: ${realisticHours} hours\n`;
-      output += `Total chats: ${totalChats}\n`;
-      output += `Total messages: ${totalMessages}\n`;
-      output += `Average messages per chat: ${avgMessages}\n`;
-      output += `Most chatted chat: Chat #${most.id} with ${most.messages} messages\n`;
-      output += `Most chatted chat name: ${most.title}\n`;
-      output += `Oldest chat: Chat #${oldest.id} - '${oldest.title}'\n`;
-      output += `First message date: ${oldest.create_time}\n`;
-
-      document.getElementById("stats").innerText = output;
-    }
-  </script>
 </body>
 </html>
